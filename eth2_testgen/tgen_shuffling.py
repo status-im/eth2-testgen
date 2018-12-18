@@ -85,18 +85,18 @@ from eth_utils import keccak
 def hash(x):
     return keccak(x)
 
-class ValidatorStatus(IntEnum):
+class ValidatorStatusCode(IntEnum):
     PENDING_ACTIVATION = 0
     ACTIVE = 1
-    EXITED_WITHOUT_PENALTY = 2
-    EXITED_WITH_PENALTY = 3
-    # Not in specs anymore - https://github.com/ethereum/eth2.0-specs/issues/216
-    PENDING_EXIT = 4
+    ACTIVE_PENDING_EXIT = 2
+    EXITED_WITHOUT_PENALTY = 3
+    EXITED_WITH_PENALTY = 4
+
 
 class ValidatorRecord(yaml.YAMLObject):
     fields = {
         # Status code
-        'status': 'ValidatorStatus',
+        'status': 'ValidatorStatusCode',
         # Extra index field to ease testing/debugging
         'original_index': 'uint64'
     }
@@ -151,7 +151,7 @@ def get_active_validator_indices(validators: [ValidatorRecord]) -> List[int]:
     """
     Gets indices of active validators from ``validators``.
     """
-    return [i for i, v in enumerate(validators) if v.status in [ValidatorStatus.ACTIVE, ValidatorStatus.PENDING_EXIT]]
+    return [i for i, v in enumerate(validators) if v.status in [ValidatorStatusCode.ACTIVE, ValidatorStatusCode.ACTIVE_PENDING_EXIT]]
 
 def shuffle(values: List[Any], seed: Hash32) -> List[Any]:
     """
@@ -320,9 +320,9 @@ def toStrShardComs(shard_comms: List[List[ShardAndCommittee]]) -> str:
 # ################################################################
 
 ## Try to deal with enums - otherwise for "ValidatorStatus.Active" you get [1], instead of 1
-def yaml_ValidatorStatus(dumper, data):
+def yaml_ValidatorStatusCode(dumper, data):
     return dumper.represent_data(data.value)
-yaml.add_representer(ValidatorStatus, yaml_ValidatorStatus)
+yaml.add_representer(ValidatorStatusCode, yaml_ValidatorStatusCode)
 
 if __name__ == '__main__':
     import sys, random
@@ -339,7 +339,7 @@ if __name__ == '__main__':
     # Config
     random.seed(int("0xEF00BEAC", 16))
     num_cases = 10
-    list_val_state = list(ValidatorStatus)
+    list_val_state = list(ValidatorStatusCode)
     test_cases = []
 
     for case in range(num_cases):
