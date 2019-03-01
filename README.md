@@ -1,5 +1,11 @@
 # Eth 2.0 test vectors generators
 
+** Status: Deprecated **
+
+Functionality has been upstreamed.
+Head over to https://github.com/ethereum/eth2.0-tests for the test vectors
+or https://github.com/ethereum/eth2.0-test-generators for their generators.
+
 Test vectors generators based on the specifications at https://github.com/ethereum/eth2.0-specs.
 
 ## Getting Started
